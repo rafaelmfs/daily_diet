@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import shortUUID from 'short-uuid';
 
 /**
  * Valida um tokenJWT enviado.
@@ -8,9 +9,12 @@ import jwt from 'jsonwebtoken';
  */
 export function validateToken(token: string, maxAge: number = 30) {
   try {
-    const decode = jwt.verify(token, 'secret', {
-      maxAge: `${maxAge} days`
-    }) as jwt.JwtPayload
+    const decode = jwt.verify(token,
+      'secret',
+      {
+        maxAge: `${maxAge} days`,
+      }
+    ) as jwt.JwtPayload
   
     return decode
     
@@ -33,4 +37,14 @@ export function generateToken<ContentType>(content: ContentType, tokenId?: strin
   })
 
   return token
+}
+
+export function generateAuthToken(userId: string, sessionId?: string): { auth: string, session_id: string} {
+  const tokenId = shortUUID.generate()
+  const token = generateToken<{ user_id: string}>({ user_id: userId}, tokenId)
+
+  return {
+    auth: token,
+    session_id: sessionId ?? tokenId
+  };
 }

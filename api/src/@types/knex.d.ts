@@ -1,5 +1,4 @@
 
-
 declare module 'knex/types/tables' {
   export interface Tables{
     users: {
@@ -14,7 +13,7 @@ declare module 'knex/types/tables' {
     users_session: {
       id: string
       user_id: string
-      logged_in: boolean
+      logged_in: number
     }
   }
 }

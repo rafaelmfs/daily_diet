@@ -2,10 +2,9 @@ import { knex } from '../database';
 import { UserInterface } from "../interfaces/User";
 //
 
-export async function createUser(user: UserInterface) {
+export async function createUser(user: Omit<UserInterface, 'id'>) {
   try {
     await knex('users').insert(user)
-
   } catch (error) {
     throw error 
   }
@@ -13,9 +12,12 @@ export async function createUser(user: UserInterface) {
 
 export async function getUserByLogin(login: string): Promise<UserInterface | undefined> {
   try {
-    const user: UserInterface = await knex('user').select('*').where({
-      login
-    }).first()
+    const user: UserInterface | undefined = await knex('users')
+      .select('*')
+      .where({
+        login
+      })
+      .first()
 
     if (user) {
       return user
@@ -30,9 +32,12 @@ export async function getUserByLogin(login: string): Promise<UserInterface | und
 
 export async function getUserById(id: string): Promise<UserInterface | undefined> {
   try {
-    const user: UserInterface = await knex('user').select('*').where({
-     id
-    }).first()
+    const user: UserInterface = await knex('users')
+      .select('id', 'name', 'login', 'picture')
+      .where({
+        id
+      })
+      .first()
 
     if (user) {
       return user

@@ -6,10 +6,8 @@ import bcrypt from 'bcrypt';
  * @returns string Hash
  */
 export function generateHash(password: string) {
-  let generatedHash = ''
-  const saltRounds = 10
-
-  bcrypt.hash(password, saltRounds, (error, hash) => generatedHash = hash)
+  const salt = bcrypt.genSaltSync(10)
+  const generatedHash = bcrypt.hashSync(password, salt)
 
   return generatedHash
 }
@@ -21,10 +19,7 @@ export function generateHash(password: string) {
  * @returns True se forem iguais
  */
 export function compareHash(hash: string, compare: string): boolean { 
-  let isValid = false;
-
-  bcrypt.compare(hash, compare)
-    .then((result) => isValid = result)
+  const isValid = bcrypt.compareSync(compare, hash)
 
   return isValid
 }
