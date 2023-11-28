@@ -8,7 +8,7 @@ const HTTP_STATUS = {
   BAD_REQUEST: 400,
 }
 
-export async function authorize(req: FastifyRequest, reply: FastifyReply, done: any) { 
+export async function authorize(req: FastifyRequest, reply: FastifyReply) { 
   try {
     const token = req.headers.authorization
 
@@ -43,8 +43,6 @@ export async function authorize(req: FastifyRequest, reply: FastifyReply, done: 
       id: session.user_id,
       session_id: session.id
     }
-
-    done()
 
   } catch (error: any) {
     console.error(error) 

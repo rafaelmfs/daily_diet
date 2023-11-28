@@ -6,11 +6,11 @@ const userController = new User()
 
 export async function userRoutes(app: FastifyInstance) {
 
-  app.post('/user', userController.register)
-  app.get('/user/:id', {
-    preHandler: authorize
+  app.post('/', userController.register)
+  app.get('/:id', {
+    preHandler: authorize,
   },userController.getUser)
-  app.patch('/user/:id', {
+  app.patch('/:id', {
     preHandler: authorize
   },userController.updateUser)
 }
