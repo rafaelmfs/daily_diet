@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import shortUUID from 'short-uuid';
 import { userSchema } from "../../interfaces/User";
-import { createUser, getUserById } from "../../models/user";
+import { createUser, getUserById, updateUser } from "../../models/user";
 import { generateHash } from "../../utils/cryptoService";
-import { getUserParamsSchema, newUserBodySchema } from "./schema";
+import { getUserParamsSchema, newUserBodySchema, updateUserBodySchema } from "./schema";
 import { CustomError } from "../../utils/CustomError";
 export class User{
   public async register(req: FastifyRequest, res: FastifyReply) {
@@ -14,8 +14,6 @@ export class User{
         const { data: newUserRequest } = data
 
         const hashPassword = generateHash(newUserRequest.password)
-
-        console.log("Password", hashPassword)
 
         const newUser = userSchema.parse({
           ...newUserRequest,
@@ -43,7 +41,7 @@ export class User{
     }
   }
 
-  public async getUser(req: FastifyRequest, res: FastifyReply, ){
+  public async getUser(req: FastifyRequest, res: FastifyReply){
     try {
       const { id } = getUserParamsSchema.parse(req.params)
       if (id !== req.user?.id) {
@@ -68,6 +66,39 @@ export class User{
       }
       res.status(500).send()
       throw error
+    }
+  }
+
+  public async updateUser(req: FastifyRequest, res: FastifyReply) {
+    try {
+      const { id } = getUserParamsSchema.parse(req.params)
+      if (id !== req.user?.id) { 
+        throw new CustomError({
+          code: 404,
+          message: "Usuário inválido"
+        })
+      }
+
+      const data = updateUserBodySchema.parse(req.body)
+      const userUpdated = await updateUser({
+        ...data,
+        id
+      })
+
+      return res.status(200).send({
+        user: userUpdated,
+      })
+
+    } catch (error) {
+      if (error instanceof CustomError) {
+        res
+          .status(error.code)
+          .send({ message: error.message })
+      } else {
+        res.status(500).send()
+        throw error
+      }
+
     }
   }
 

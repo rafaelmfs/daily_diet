@@ -10,7 +10,6 @@ export async function newSession(session: Session) {
   try {
     await knex('users_session').insert({
       ...session,
-      created_at: new Date().toISOString(),
       logged_in: session.logged_in ? 1 : 0
     })
     } catch (error) { 

@@ -50,8 +50,26 @@ export async function getUserById(id: string): Promise<UserInterface | undefined
   }
 }
 
-export async function updateUser(user: Partial<UserInterface> & { id: string }): Promise<UserInterface>{
-  return {} as UserInterface
+export async function updateUser(user: Partial<UserInterface> & { id: string }): Promise<any>{
+  try {
+    const updatedUser = await knex('users')
+      .where({
+        id: user.id
+      })
+      .update({
+        name: user?.name,
+        login: user?.login,
+        picture: user?.picture,
+        password: user?.password,
+        updated_at: new Date().toISOString()
+      },
+        ['login', 'name', 'picture'],)
+    
+    return updatedUser[0]
+
+  } catch (error) {
+    throw error
+  }
 }
 
 //

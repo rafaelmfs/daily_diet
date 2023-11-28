@@ -9,3 +9,10 @@ export const newUserBodySchema = z.object({
 export const getUserParamsSchema = z.object({
   id: z.string()
 })
+
+export const updateUserBodySchema = z.object({
+  name: z.string().optional(),
+  login: z.coerce.string().optional(),
+  password: z.coerce.string().optional(),
+  picture: z.string().optional(),
+})

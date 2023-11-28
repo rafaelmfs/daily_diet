@@ -15,5 +15,12 @@ declare module 'knex/types/tables' {
       user_id: string
       logged_in: number
     }
+    meals: {
+      name: string;
+      description: string;
+      in_diet: number;
+      created_at: string;
+      updated_at?: string;
+    }
   }
 }

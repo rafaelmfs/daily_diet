@@ -10,4 +10,7 @@ export async function userRoutes(app: FastifyInstance) {
   app.get('/user/:id', {
     preHandler: authorize
   },userController.getUser)
+  app.patch('/user/:id', {
+    preHandler: authorize
+  },userController.updateUser)
 }
