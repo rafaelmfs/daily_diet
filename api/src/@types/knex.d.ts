@@ -21,6 +21,7 @@ declare module 'knex/types/tables' {
       in_diet: number;
       created_at: string;
       updated_at?: string;
+      time: string;
     }
   }
 }

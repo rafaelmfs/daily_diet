@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { deleteSession, getSession } from '../models/user_sessions';
+import { getSession } from '../models/user_sessions';
 import { validateToken } from '../utils/jwtService';
 import { CustomError } from '../utils/CustomError';
 

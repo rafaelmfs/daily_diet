@@ -4,6 +4,7 @@ interface Session{
   user_id: string;
   id: string;
   logged_in: boolean;
+  
 }
 
 export async function newSession(session: Session) {

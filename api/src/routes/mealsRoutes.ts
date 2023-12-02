@@ -1,20 +1,35 @@
-import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
+import { FastifyInstance } from "fastify"
 import { authorize } from "../middlewares/authorization"
+import { MealsController } from "../controllers/Meals/MealsController"
 
+const mealController = new MealsController()
 export async function mealsRoutes(app: FastifyInstance) {
   app.addHook('preHandler', async (req, reply) => authorize(req, reply))
   
     /**GET ALL MEALS */
-  app.get('/', (req: FastifyRequest, reply: FastifyReply) => {})
+  app.get('/', mealController.getAllMeals)
   /**GET A SPECIFIC MEAL */
-  app.get('/:id', (req: FastifyRequest, reply: FastifyReply) => { })
+  app.get('/:id', mealController.getMeal)
+  app.get('/in_diet', {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          in_diet: {
+            type: 'number',
+            default: 0,
+          }
+        }
+      }
+    }
+  } ,mealController.getMealInDiet)
   /** Metrics for all meals*/
-  app.get('/metrics', (req: FastifyRequest, reply: FastifyReply) => { })
+  app.get('/best_sequence', mealController.getBestSequenceMealInDiet)
   /**Create a meal */
-  app.post('/', (req: FastifyRequest, reply: FastifyReply) => { })
+  app.post('/', mealController.createMeal)
   /**Update a meal */
-  app.patch('/:id', (req: FastifyRequest, reply: FastifyReply) => { })
+  app.patch('/:id', mealController.updateMeal)
   /** Delete a meal */
-  app.delete('/:id', (req: FastifyRequest, reply: FastifyReply) => { })
+  app.delete('/:id', mealController.deleteMeal)
 
 }

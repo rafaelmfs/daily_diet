@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import shortUUID from 'short-uuid';
 import { userSchema } from "../../interfaces/User";
 import { createUser, getUserById, updateUser } from "../../models/user";
 import { generateHash } from "../../utils/cryptoService";
 import { getUserParamsSchema, newUserBodySchema, updateUserBodySchema } from "./schema";
 import { CustomError } from "../../utils/CustomError";
+import { generateShortUUID } from "../../utils/generateShorUUID";
 export class User{
   public async register(req: FastifyRequest, res: FastifyReply) {
     try {
@@ -18,7 +18,7 @@ export class User{
         const newUser = userSchema.parse({
           ...newUserRequest,
           password: hashPassword,
-          id: shortUUID.generate()
+          id: generateShortUUID()
         })
   
         await createUser(newUser)      

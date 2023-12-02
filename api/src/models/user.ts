@@ -21,10 +21,7 @@ export async function getUserByLogin(login: string): Promise<UserInterface | und
 
     if (user) {
       return user
-    }
-
-    throw new Error('Usuário não encontrado')
-      
+    }      
   } catch (error) {
     throw error
   }

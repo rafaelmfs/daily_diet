@@ -4,9 +4,10 @@ import { checkUserLoggedIn, deleteSession, newSession } from '../../models/user_
 import { compareHash } from '../../utils/cryptoService';
 import { generateAuthToken, validateToken } from '../../utils/jwtService';
 import { loginBodySchema } from './schema';
+import { CustomError } from '../../utils/CustomError';
 
 export class Authenticate{
-  public async login(req: FastifyRequest, res: FastifyReply) {
+  public async login(req: FastifyRequest, reply: FastifyReply) {
     try {
       const data = loginBodySchema.safeParse(req.body)
   
@@ -14,38 +15,46 @@ export class Authenticate{
         const { login, password } = data.data
         const user =  await getUserByLogin(login);
     
-        if (user) {
-          const isCorrectPassword = compareHash(user.password, password);
-    
-          if (isCorrectPassword) {
-            const lastSession = await checkUserLoggedIn(user.id)
-            if (lastSession) {
-              await deleteSession(lastSession.id)
-            }
-
-            const { auth, session_id } = generateAuthToken(user.id)
-
-            const session = {
-              id: session_id,
-              user_id: user.id,
-              logged_in: true,
-            }
-
-            await newSession(session)
-
-            return res.status(200).send({ auth })
+        if (!user) {      
+          throw new CustomError({
+            code: 404,
+            message: "Usuário não encontrado"
+          })
+        }
+        
+        const isCorrectPassword = compareHash(user.password, password);
+  
+        if (isCorrectPassword) {
+          const lastSession = await checkUserLoggedIn(user.id)
+          if (lastSession) {
+            await deleteSession(lastSession.id)
           }
+
+          const { auth, session_id } = generateAuthToken(user.id)
+
+          const session = {
+            id: session_id,
+            user_id: user.id,
+            logged_in: true,
+          }
+
+          await newSession(session)
+
+          return reply.status(200).send({ auth })
         }
       }
-  
-      return res.status(400).send({
-        message: "Usuário ou senha inválido!"
-      })
+
       
     } catch (error) {
+      if (error instanceof CustomError) { 
+        return reply.status(error.code).send({
+          message: error.message
+        })
+
+      }
+
       console.error(error)
-      
-      res.status(500).send()
+      reply.status(500).send()
     }
   }
 

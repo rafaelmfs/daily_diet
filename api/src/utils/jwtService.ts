@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import shortUUID from 'short-uuid';
+import { generateShortUUID } from './generateShorUUID';
 
 /**
  * Valida um tokenJWT enviado.
@@ -40,7 +40,7 @@ export function generateToken<ContentType>(content: ContentType, tokenId?: strin
 }
 
 export function generateAuthToken(userId: string, sessionId?: string): { auth: string, session_id: string} {
-  const tokenId = shortUUID.generate()
+  const tokenId = generateShortUUID()
   const token = generateToken<{ user_id: string}>({ user_id: userId}, tokenId)
 
   return {

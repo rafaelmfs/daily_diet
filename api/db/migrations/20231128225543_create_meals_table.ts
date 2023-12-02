@@ -7,7 +7,8 @@ export async function up(knex: Knex): Promise<void> {
     table.string('name')
     table.string('description')
     table.integer('in_diet')
-    table.string('user_id').unique()
+    table.string('time')
+    table.string('user_id')
     table.dateTime('created_at').defaultTo(knex.fn.now())
     table.string('updated_at').nullable()
     
