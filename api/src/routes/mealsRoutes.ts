@@ -15,6 +15,7 @@ export async function mealsRoutes(app: FastifyInstance) {
       querystring: {
         type: 'object',
         properties: {
+
           in_diet: {
             type: 'number',
             default: 0,
@@ -23,6 +24,19 @@ export async function mealsRoutes(app: FastifyInstance) {
       }
     }
   } ,mealController.getMealInDiet)
+  app.get('/count', {
+    schema: {
+      querystring: {
+        type: 'object',
+        properties: {
+          in_diet: {
+            type: ['number', 'null'],
+            default: undefined,
+          }
+        }
+      }
+    }
+  } ,mealController.getMealsCount)
   /** Metrics for all meals*/
   app.get('/best_sequence', mealController.getBestSequenceMealInDiet)
   /**Create a meal */

@@ -21,3 +21,7 @@ export const idMealParamSchema = z.object({
 export const inDietQueryParamSchema = z.object({
   in_diet: z.coerce.number()
 })
+
+export const mealsCountParamSchema = z.object({
+  in_diet: z.coerce.number().optional()
+})

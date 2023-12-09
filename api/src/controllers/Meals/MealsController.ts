@@ -1,7 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { CustomError } from "../../utils/CustomError";
-import { createMealBodySchema, idMealParamSchema, inDietQueryParamSchema, updateMealBodySchema } from "./schema";
-import { createMeal, deleteMeal, getAllMeals, getMeal, getMealInDiet, updateMeal } from "../../models/meals";
+import { createMealBodySchema, idMealParamSchema, inDietQueryParamSchema, mealsCountParamSchema, updateMealBodySchema } from "./schema";
+import { createMeal, deleteMeal, getAllMeals, getMeal, getMealInDiet, getMealsCount, updateMeal } from "../../models/meals";
 import { generateShortUUID } from "../../utils/generateShorUUID";
 import { bestSequenceMealsInDiet } from "../../services/bestSequenceMealsInDiet";
 
@@ -82,6 +82,33 @@ export class MealsController{
       const meals = await getAllMeals(req.user.id)
 
       reply.status(200).send(meals)
+    } catch (error) {
+      if (error instanceof CustomError) { 
+        reply.status(error.code).send({
+          message: error.message
+        })
+      }
+
+      reply.status(500).send()
+    }
+  }
+
+  public async getMealsCount(req: FastifyRequest, reply: FastifyReply) {
+    try {
+      if (!req.user?.id) {
+        throw new CustomError({
+          code: 400,
+          message: "Sem permissão, faça login"
+        })
+      }
+
+      const { in_diet } = mealsCountParamSchema.parse(req.query)
+      const mealsCount = await getMealsCount(req.user.id, in_diet)
+
+      return reply.status(200).send({
+        count: mealsCount
+      })
+
     } catch (error) {
       if (error instanceof CustomError) { 
         reply.status(error.code).send({

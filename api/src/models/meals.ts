@@ -97,6 +97,27 @@ export async function getMealInDiet(in_diet: boolean, user_id: string):
   }
 }
 
+export async function getMealsCount(user_id: string, in_diet?: number): Promise<number>{
+  try {
+    const mealsCount = await knex("meals").where((builder) => {
+      if (in_diet != null) {
+        builder.where({
+          user_id,
+          in_diet
+        })
+      }
+
+      builder.where({ user_id })      
+    }).count({ count: '*' })
+
+    return mealsCount[0].count ?? 0
+
+  } catch (error) {
+    throw error
+  }
+ }
+
+
 export async function createMeal(meal: Meal) {
   try {
     await knex('meals').insert(meal)
