@@ -7,8 +7,6 @@ export const Container = styled(SafeAreaView)`
   height: 100%;
   flex-direction: column;
   align-items: center;
-
-  margin-top: 80px;
   gap: 12px;
 `
 
