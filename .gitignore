@@ -1,3 +1,6 @@
 api/node_modules
 api/db/app.db
 api/.env
+mobile/.env
+mobile/node_modules
+mobile/.expo

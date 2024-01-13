@@ -7,7 +7,7 @@ const userController = new User()
 export async function userRoutes(app: FastifyInstance) {
 
   app.post('/', userController.register)
-  app.get('/:id', {
+  app.get('/', {
     preHandler: authorize,
   },userController.getUser)
   app.patch('/:id', {

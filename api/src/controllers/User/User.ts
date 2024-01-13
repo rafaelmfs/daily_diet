@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { userSchema } from "../../interfaces/User";
 import { createUser, getUserById, updateUser } from "../../models/user";
-import { generateHash } from "../../utils/cryptoService";
-import { getUserParamsSchema, newUserBodySchema, updateUserBodySchema } from "./schema";
 import { CustomError } from "../../utils/CustomError";
+import { generateHash } from "../../utils/cryptoService";
 import { generateShortUUID } from "../../utils/generateShorUUID";
+import { getUserParamsSchema, newUserBodySchema, updateUserBodySchema } from "./schema";
 export class User{
   public async register(req: FastifyRequest, res: FastifyReply) {
     try {
@@ -43,14 +43,12 @@ export class User{
 
   public async getUser(req: FastifyRequest, res: FastifyReply){
     try {
-      const { id } = getUserParamsSchema.parse(req.params)
-      if (id !== req.user?.id) {
-        throw new CustomError({
-          code: 404,
-          message: "Usuário inválido"
-        })
-      }
+      const id = req.user?.id
 
+      if (!id) {
+        throw new Error("invalid user!")
+      }
+      
       const user = await getUserById(id)
       return res.status(200).send({ user });
       
