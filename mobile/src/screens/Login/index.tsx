@@ -1,18 +1,58 @@
 import { useNavigation } from '@react-navigation/native';
-import { Text, View } from "react-native";
+import { Controller, useForm } from 'react-hook-form';
+import { Alert, Text, View } from "react-native";
+import { login } from '../../api/CRUD/AUTH';
 import { Button } from '../../components/Button';
+import { ErrorLabel } from '../../components/ErrorLabel';
 import { Logo } from '../../components/Logo';
 import { PasswordInput } from '../../components/PasswordInput';
 import { TextInputStyled } from '../../components/TextInput';
+import { useAuthUser } from '../../context/UserContext';
 import { Container } from "./style";
 
 
 
 export function Login() {
   const navigation = useNavigation()
+  const { 
+    control,
+    handleSubmit, 
+    formState: {
+      errors,
+    },
+    setError
+  } = useForm({
+    defaultValues: {
+      login: '',
+      password: '',
+    }
+  })
+  const { setAuthToken, setUser } = useAuthUser()
   
   function handleRegister() {
     navigation.navigate('register')
+  }
+
+  async function handleSubmitLogin(data: { 
+    login: string;
+    password: string;
+  }) {
+    try {
+      const authToken = await login(data)
+      if (authToken) {
+        setAuthToken(authToken)
+        //redirect to dashboard
+        Alert.alert("Usuário logado")
+      }
+    } catch (error) {
+      console.error(error)
+      setError("login", {
+        message: ""
+      })
+      setError("password", {
+        message: "Usário ou senha inválidos"
+      })
+    }
   }
 
   return (
@@ -20,11 +60,47 @@ export function Login() {
       <Logo />
       <View style={{ width: '100%' }}>
         <Text>Login</Text>
-        <TextInputStyled />
+        <Controller
+          name='login'
+          rules={{
+            required: {
+              value: true,
+              message: "Campo obrigatório"
+          }}}
+          control={control}
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInputStyled
+              autoCapitalize='none'
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={!!errors.login}
+            />
+          )}
+        />
+        {errors?.login?.message && <ErrorLabel>{errors.login.message}</ErrorLabel>}
+        
       </View>
       <View style={{ width: '100%' }}>
         <Text>Senha</Text>
-        <PasswordInput />
+        <Controller
+          name='password'
+          rules={{
+            required: {
+              value: true,
+              message: "Campo obrigatório"
+          }}}
+          control={control}
+          render={({ field: { onChange, onBlur, value}}) => (
+            <PasswordInput
+              onChangeText={onChange}
+              onBlur={onBlur}
+              value={value}
+              error={!!errors.password}
+            />
+          )}
+        />
+        {errors.password && <ErrorLabel>{errors.password.message}</ErrorLabel>}
       </View>
 
       <View style={{
@@ -33,6 +109,7 @@ export function Login() {
       }}>
         <Button
           text="Login"
+          onPress={handleSubmit(handleSubmitLogin)}
         />
         <Button
           text="Cadastrar"

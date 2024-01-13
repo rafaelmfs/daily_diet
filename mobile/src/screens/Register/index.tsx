@@ -1,11 +1,13 @@
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
+import { login, register } from "../../api/CRUD/AUTH";
 import { BackButton } from "../../components/BackButton";
 import { Button } from "../../components/Button";
 import { ErrorLabel } from "../../components/ErrorLabel";
 import { Logo } from "../../components/Logo";
 import { PasswordInput } from "../../components/PasswordInput";
 import { TextInputStyled } from "../../components/TextInput";
+import { useAuthUser } from "../../context/UserContext";
 import { Container, InputContainer } from "./styled";
 
 interface RegisterData {
@@ -28,9 +30,41 @@ export function Register() {
     }
   })
   const passwordValue = watch('password')
+  const { 
+    setAuthToken,
+  } = useAuthUser()
 
-  function onSubmit(data: RegisterData) {
-    console.log(data)
+  async function loginUser(data: {
+    login: string;
+    password: string;
+  }) {
+    try {
+      const authToken = await login(data)
+
+      if (authToken) {
+        setAuthToken(authToken)
+        //redirect to dashboard or profile
+      }
+    } catch (error) {
+      
+    }
+  }
+
+  async function onSubmit(data: RegisterData) {
+    try {
+      await register({
+        login: data.login,
+        password: data.password,
+        name: data.user_name
+      })
+
+      loginUser({
+        login: data.login,
+        password: data.password
+      })
+    } catch (e) {
+      console.error(e)
+    }
   }
   
   return (
@@ -52,7 +86,11 @@ export function Register() {
         <Text>Nome</Text>
         <Controller
           control={control}
-          rules={{ required: true }}
+          rules={{
+            required: {
+              value: true,
+              message: "Campo obrigatório"
+          }}}
           name="user_name"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInputStyled
@@ -70,11 +108,16 @@ export function Register() {
         <Text>Usuário</Text>
         <Controller
           control={control}
-          rules={{ required: true }}
+          rules={{
+            required: {
+              value: true,
+              message: "Campo obrigatório"
+          }}}
           name="login"
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInputStyled
               placeholder="exemplo123"
+              autoCapitalize='none'
               onChangeText={onChange}
               onBlur={onBlur}
               value={value}
