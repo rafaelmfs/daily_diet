@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 import { Controller, useForm } from 'react-hook-form';
-import { Alert, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import { login } from '../../api/CRUD/AUTH';
 import { Button } from '../../components/Button';
 import { ErrorLabel } from '../../components/ErrorLabel';
@@ -27,7 +27,7 @@ export function Login() {
       password: '',
     }
   })
-  const { setAuthToken, setUser } = useAuthUser()
+  const { setAuthToken } = useAuthUser()
   
   function handleRegister() {
     navigation.navigate('register')
@@ -41,8 +41,8 @@ export function Login() {
       const authToken = await login(data)
       if (authToken) {
         setAuthToken(authToken)
-        //redirect to dashboard
-        Alert.alert("Usuário logado")
+        navigation.navigate('home')
+        
       }
     } catch (error) {
       console.error(error)

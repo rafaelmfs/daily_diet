@@ -1,3 +1,4 @@
+import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 import { login, register } from "../../api/CRUD/AUTH";
@@ -29,6 +30,9 @@ export function Register() {
       repeat_password: ''
     }
   })
+
+  const navigation = useNavigation()
+
   const passwordValue = watch('password')
   const { 
     setAuthToken,
@@ -43,7 +47,7 @@ export function Register() {
 
       if (authToken) {
         setAuthToken(authToken)
-        //redirect to dashboard or profile
+        navigation.navigate("home")
       }
     } catch (error) {
       

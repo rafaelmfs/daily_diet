@@ -19,7 +19,7 @@ export default function App() {
         backgroundColor: theme.COLORS['gray-1']
       }}>
         <Text style={{
-          fontSize: theme.FONT_SIZE.xl,
+          fontSize: Number(theme.FONT_SIZE.xl.replace('px', '')),
           color: theme.COLORS['gray-6']
         }}>
           Carregando...
