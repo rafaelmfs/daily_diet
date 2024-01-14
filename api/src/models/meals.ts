@@ -23,6 +23,7 @@ export async function getAllMeals(user_id: string)
         'description',
         'in_diet',
         'time',
+        'created_at',
         'user_id'
       ])
     
@@ -48,6 +49,7 @@ export async function getMeal(id: string, user_id: string): Promise<ReturnMeal>{
         'description',
         'in_diet',
         'time',
+        'created_at',
         'user_id'
       ])
       .first()
@@ -78,6 +80,7 @@ export async function getMealInDiet(in_diet: boolean, user_id: string):
         'description',
         'in_diet',
         'time',
+        'created_at',
         'user_id'
       ])
     
@@ -145,6 +148,7 @@ export async function updateMeal(newMeal: Meal): Promise<ReturnMeal> {
         'description',
         'in_diet',
         'time',
+        'created_at',
         'user_id'
       ])
     
