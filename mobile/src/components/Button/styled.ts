@@ -4,7 +4,7 @@ import { css } from "styled-components";
 import styled from "styled-components/native";
 
 interface ButtonProps extends ComponentProps<typeof TouchableOpacity>{
-  variant?: 'outline' | 'default';
+  variant?: 'outline' | 'default' | "text";
 }
 
 export const Button = styled.TouchableOpacity<ButtonProps>`
@@ -24,6 +24,16 @@ export const Button = styled.TouchableOpacity<ButtonProps>`
       `
     }
 
+    if (variant == 'text') {
+      return css`
+        background-color: 'transparent';
+        border: none;
+        padding: 0;
+        align-items: flex-start;
+        justify-content: flex-start;
+      `
+    }
+
     return css`
       background-color: ${disabled ? theme.COLORS["gray-2"] : theme.COLORS["gray-1"]};
     `
@@ -37,6 +47,11 @@ export const Text = styled.Text<{ variant?: string }>`
     if (variant == 'outline') {
       return css`
         color: ${theme.COLORS["gray-1"]};
+      `
+    }
+    if (variant == 'text') {
+      return css`
+        color: ${theme.COLORS["gray-2"]}
       `
     }
     return css`

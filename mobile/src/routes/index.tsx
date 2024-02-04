@@ -7,7 +7,7 @@ export function Routes() {
   return (
     <UserContextProvider>
       <View style={{
-        flex: 1
+        flex: 1,
       }}>
         <NavigationContainer>
           <AppRoutes />

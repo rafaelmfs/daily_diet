@@ -4,7 +4,7 @@ import styled from "styled-components/native";
 
 
 export const HomeContainer = styled(SafeAreaView)`
-  padding: 24px 24px 0;
+  padding: 24px;
   flex-direction: column;
   gap: 32px;
 `
@@ -50,6 +50,35 @@ export const StatisticsOpenButton = styled(ArrowUpRight) <StatisticsProps>`
   top: 8px;
 `
 
-export const MealsHistoryContainer = styled.View`
-  
+export const MealsHistoryTitle = styled.Text`
+  ${({ theme }) => `
+    font-size: ${theme.FONT_SIZE.xl}px;
+    font-weight: bold;
+    color: ${theme.COLORS['gray-1']};
+    letter-spacing: -2px;
+  `}
+`
+export const MealsHistoryItem = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  border: 1px solid ${({ theme }) => theme.COLORS['gray-4']};
+  border-radius: 6px;
+  padding: 16px;
+  margin: 4px 0;
+` 
+export const MealsHistoryItemStatus = styled.View`
+  flex-direction: row; 
+  flex: 1;
+  align-items: center; 
+  justify-content: space-between;
+`
+
+export const MealsHistoryItemStatusIndicator = styled.View<{ in_diet: boolean}>`
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background-color: ${({ theme, in_diet}) => in_diet ? theme.COLORS['green-mid'] : theme.COLORS['red-mid']};
+  margin-left: auto;
 `

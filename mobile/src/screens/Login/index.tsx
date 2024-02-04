@@ -38,11 +38,13 @@ export function Login() {
     password: string;
   }) {
     try {
-      const authToken = await login(data)
+      const authToken = await login({
+        login: data.login.trim(),
+        password: data.password.trim()
+      })
       if (authToken) {
         setAuthToken(authToken)
         navigation.navigate('home')
-        
       }
     } catch (error) {
       console.error(error)

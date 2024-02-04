@@ -25,7 +25,7 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     setUser(user)
   }
 
-  async function getExistinToken() {
+  async function getAuthToken() {
     const token = await getToken()
 
     if (token) {
@@ -34,8 +34,8 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
   }
 
   useEffect(() => {
-    getExistinToken()
-  }, [])
+    getAuthToken()
+  }, [authToken])
 
   return (
     <UserContext.Provider
