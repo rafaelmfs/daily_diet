@@ -36,13 +36,6 @@ export const Grid = styled.View`
   gap: 8px;
 `
 
-export const InDietIndicator = styled.View<{ variant: "success" | "danger"}>`
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  background-color: ${({ theme, variant }) => variant == "success" ? theme.COLORS["green-dark"] : theme.COLORS["red-dark"]};
-`
-
 export const InDietButton = styled.Pressable<{ variant: "success" | "danger" | "default"}>`
   ${({ theme, variant}) => {
     const colors = {

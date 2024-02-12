@@ -1,20 +1,23 @@
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useCallback, useState } from "react";
 import { FlatList, Text, View } from "react-native";
-import { getAllMeals } from "../../api/CRUD/MEALS/getAllMeals";
 import { Button } from "../../components/Button";
 import { VerticalDivider } from "../../components/VerticalDivider";
 import { Meal } from "../../interfaces/Meal";
 import theme from "../../theme";
 import { MealsHistoryItem, MealsHistoryItemStatus, MealsHistoryItemStatusIndicator, MealsHistoryTitle } from "./styled";
 
+interface MealsHistoryProps {
+  meals: Meal[]
+}
+
 function RowSeparator(){
   return <View style={{ width: '100%', height: 16, backgroundColor: "transparent" }} />
 }
 
-export function MealsHistory() {
-  const [meals, setMeals] = useState<Meal[]>([])
+export function MealsHistory({
+  meals
+}: MealsHistoryProps) {
   const mealsByDate: { [date: string]: Meal[] } = {};
 
   const navigation = useNavigation()
@@ -36,24 +39,12 @@ export function MealsHistory() {
       name: item.name,
       description: item.description,
       in_diet: !!item.in_diet,
-      time: dayjs(item.time).format("HH:mm")
+      time: dayjs(item.time).format("HH:mm"),
+      completeMeal: item
     }))
   }));
 
-  async function loadMeals(){
-    const { meals } = await getAllMeals()
-    
-    if(meals){
-      setMeals(meals)
-    }
-  }
-
-  useFocusEffect(useCallback(() => {
-    loadMeals()
-  }, []))
-
-
-  return (
+   return (
     <FlatList 
       data={displayMealsHistory}
       style={{
@@ -64,7 +55,7 @@ export function MealsHistory() {
         <>
           <MealsHistoryTitle style={{ fontSize: 32 }}>{item.date}</MealsHistoryTitle>
           {item.items.map(meal => (
-            <MealsHistoryItem key={meal.id}>
+            <MealsHistoryItem onPress={() => navigation.navigate("details", { meal: meal.completeMeal })} key={meal.id}>
               <Text style={{ fontSize: 16, fontWeight: "700"  ,color: theme.COLORS["gray-1"]}}>{meal.time}</Text>
               <VerticalDivider />
               <MealsHistoryItemStatus>
@@ -91,6 +82,7 @@ export function MealsHistory() {
           <Button
             variant="text"
             text="Clique para cadastrar uma nova refeição"
+            onPress={() => navigation.navigate("meal")}
           />
         </View>
       )}

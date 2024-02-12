@@ -8,8 +8,6 @@ export async function getToken() {
     if (token) {
       return token
     }
-
-    throw new Error("Usuário não autenticado")
   } catch (error) {
       throw error
   }

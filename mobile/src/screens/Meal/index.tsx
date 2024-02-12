@@ -9,18 +9,26 @@ import { Button } from '../../components/Button';
 import { DatePicker } from '../../components/DatePicker';
 import { DateTimePicker } from '../../components/DateTimePicker';
 import { ErrorLabel } from '../../components/ErrorLabel';
+import { InDietIndicator } from '../../components/InDietIndicator';
 import { StyledInput } from '../../components/TextInput';
 import { Meal as TypeMeal } from '../../interfaces/Meal';
 import {
   FormContainer,
   Grid,
   InDietButton,
-  InDietIndicator,
   InputLabel,
   MealContaier,
   MealContentContainer,
   MealHeader
 } from "./styled";
+
+interface MealFormData {
+  name: string,
+  description: string,
+  date: string,
+  time: string,
+  in_diet: number,
+}
 
 export function Meal(){
   const { params } = useRoute<any>()
@@ -33,19 +41,19 @@ export function Meal(){
     watch,
     handleSubmit, 
     formState: { errors: formErrors, dirtyFields },
+
   } = useForm({
     defaultValues: {
       name: meal?.name ?? '',
       description: meal?.description ?? "",
-      date: dayjs(meal?.time ?? "").toString(),
-      time: dayjs(meal?.time ?? "").toISOString(),
-      in_diet: meal?.in_diet ?? -1,
+      date: meal?.time ?? dayjs().toString(),
+      time: meal?.time ?? dayjs().toISOString(),
+      in_diet: meal ? Number(meal.in_diet) : -1,
     }
   })
   const inDiet = watch("in_diet")
 
-  async function onSubmit(data: any){
-
+  async function onSubmit(data: MealFormData){
     const dateField = dayjs(data.date).format("YYYY-MM-DD");
     let timeField = dayjs(data.time).format("HH:mm");
 
@@ -63,7 +71,7 @@ export function Meal(){
         })
   
         if(mealResponse.status == 200){
-          navigation.navigate('overview')
+          navigation.navigate('feedback', { success: inDiet == 1})
         }
       }else{
         const mealResponse = await createMeal({
@@ -74,7 +82,7 @@ export function Meal(){
         })
   
         if(mealResponse.status == 201){
-          navigation.navigate('overview')
+          navigation.navigate('feedback', { success: inDiet == 1})
         }
       }
     } catch (error) {
@@ -88,7 +96,9 @@ export function Meal(){
     <MealContaier>
       <MealHeader>
         <BackButton />
-        <Text style={{ fontSize: 24, fontWeight: '500'}}>Nova refeição</Text>
+        <Text style={{ fontSize: 24, fontWeight: '500'}}>
+          { meal?.id ? "Editar refeição" : "Nova refeição"}
+        </Text>
         <View />
       </MealHeader>
       <MealContentContainer>
@@ -192,7 +202,7 @@ export function Meal(){
               name='in_diet'
               control={control}
               rules={{
-                validate: (value) => value > -1 || "Escolha uma opção"
+                validate: (value) => Number(value) > -1 || "Escolha uma opção"
               }}
               render={({ field: { value, onChange}}) => (
               <Grid>
@@ -212,7 +222,7 @@ export function Meal(){
 
         </FormContainer>
 
-        <Button onPress={handleSubmit(onSubmit)} disabled={inDiet === -1} variant='default' text='Cadastrar Refeição'/>
+        <Button onPress={handleSubmit(onSubmit)} disabled={inDiet === -1} variant='default' text={meal?.id ? "Salvar alterações" : "Cadastrar Refeição"}/>
       </MealContentContainer>
 
     </MealContaier>

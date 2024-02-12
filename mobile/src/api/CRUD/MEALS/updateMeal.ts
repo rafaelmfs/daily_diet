@@ -16,7 +16,7 @@ export async function updateMeal({
   time
 }: MealParams) {
   try {
-    const mealResponse = await api.patch(`/meal/${id}`, {
+    const mealResponse = await api.patch(`/meals/${id}`, {
       description,
       in_diet,
       name,

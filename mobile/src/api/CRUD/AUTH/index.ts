@@ -34,3 +34,11 @@ export async function login(data: LoginParams) {
     throw error
   }
 }
+
+export async function logout(){
+  try {
+    return await api.get("/logout");
+  } catch (error) {
+    throw error
+  }
+}

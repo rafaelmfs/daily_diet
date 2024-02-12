@@ -64,6 +64,7 @@ export function Login() {
 
   async function loadLastSession(){
     const token = await getToken()
+
     if(token){
       configAuthAPI(token)
       setAuthToken(token)

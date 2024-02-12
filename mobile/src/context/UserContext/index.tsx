@@ -1,11 +1,13 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { User } from "../../interfaces/User";
 import { addTokenInStorage } from "../../storage/auth/addTokenInStorage";
 import { getToken } from "../../storage/auth/getToken";
+import { removeToken } from "../../storage/auth/removeToken";
 
 interface UserContextData{
   user?: User;
   authToken?: string;
+  removeAuthToken: () => Promise<void>
   setUser: (user: User) => void
   setAuthToken: (token: string) => void
 }
@@ -33,18 +35,30 @@ export function UserContextProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  async function removeAuthToken(){
+    await removeToken()
+    setAuthToken(undefined)
+    setUser(undefined)
+  }
+
+  const contextData = useMemo(() => (
+    {
+      authToken,
+      user,
+      removeAuthToken,
+      setAuthToken: handleSetAuthToken,
+      setUser: handleSetUser,
+    }
+  ), [user?.id])
+
+
   useEffect(() => {
     getAuthToken()
   }, [authToken])
 
   return (
     <UserContext.Provider
-      value={{
-        authToken,
-        user,
-        setAuthToken: handleSetAuthToken,
-        setUser: handleSetUser
-      }}
+      value={contextData}
     >
       {children}
     </UserContext.Provider>

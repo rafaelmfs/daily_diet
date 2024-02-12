@@ -1,23 +1,26 @@
 import { Subtitle, Title } from "./styled"
 
+type TextAlign = "start" | "end" | "left" | "right" | "center" | "justify" 
 interface HightLightProps{
   title: string
   subtitle?: string
   variant: 'lg' | 'md' | 'sm'
-  center?: boolean
+  titleAlign?: TextAlign
+  subTitleAlign?: TextAlign;
 }
 
 export function HightLight({
   subtitle,
   title,
   variant,
-  center
+  subTitleAlign,
+  titleAlign
 }: HightLightProps) {
   return (
     <>
-      <Title variant={variant}>{title}</Title>
+      <Title align={titleAlign} variant={variant}>{title}</Title>
       {
-        subtitle && <Subtitle center={center}>{subtitle}</Subtitle>
+        subtitle && <Subtitle align={subTitleAlign}>{subtitle}</Subtitle>
       }
     </>
   )

@@ -15,6 +15,7 @@ export const Header = styled.View`
   justify-content: space-between;
 `
 export const Profile = styled.TouchableOpacity`
+  position: relative;
   width: 40px;
   height: 40px;
   
@@ -24,6 +25,7 @@ export const Profile = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   background-color: ${({ theme }) => theme.COLORS["gray-6"]};
+  z-index: 10;
 `
 type StatisticsProps = {
   variant: "success" | "danger"
@@ -81,4 +83,22 @@ export const MealsHistoryItemStatusIndicator = styled.View<{ in_diet: boolean}>`
   border-radius: 999px;
   background-color: ${({ theme, in_diet}) => in_diet ? theme.COLORS['green-mid'] : theme.COLORS['red-mid']};
   margin-left: auto;
+`
+
+export const DropDownContainer = styled.View`
+  position: absolute;
+  bottom: -100%;
+  right: 0;
+  width: 80px;
+  background: ${({ theme }) => theme.COLORS.white};
+  padding: 8px;
+  border-radius: 6px;
+  elevation: 5;
+`
+
+export const DropDownItem = styled.Pressable`
+  background: transparent;
+  width: 100%;
+  flex-direction: row;
+  gap: 4px;
 `

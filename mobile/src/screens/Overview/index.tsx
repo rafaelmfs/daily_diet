@@ -1,21 +1,32 @@
+import { useRoute } from "@react-navigation/native";
 import { useTheme } from "styled-components/native";
 import { BackButton } from "../../components/BackButton";
 import { HightLight } from "../../components/HightLight";
 import { Card, CardContainer, EstatisticsContainer, OverviewContainer, OverviewHeader } from "./styled";
 
+type Statiscts = {
+  percentage: number;
+  bestSequence: number;
+  mealsCount: number;
+  mealsInDiet: number;
+}
+
 export function Overview(){
   const theme = useTheme()
+  const route: any = useRoute()
+  const statistics: Statiscts  = route.params
+  const success = statistics.percentage >= 60
 
   return (
-    <OverviewContainer success>
+    <OverviewContainer success={success}>
       <OverviewHeader>
-        <BackButton color={theme.COLORS["green-dark"]} style={{ marginRight: 'auto' }} />
+        <BackButton color={success ? theme.COLORS["green-dark"] : theme.COLORS["red-dark"]} style={{ marginRight: 'auto' }} />
 
         <HightLight
-          title="90,86%"
+          title={`${statistics.percentage.toFixed(2)}%`}
           subtitle="das refeições dentro da dieta"
           variant="lg"
-          center
+          subTitleAlign="center"
         />
       </OverviewHeader>
 
@@ -28,42 +39,42 @@ export function Overview(){
         <CardContainer>
           <Card fullWidth variant="light">
             <HightLight
-              title="22"
+              title={String(statistics.bestSequence)}
               subtitle="melhor sequência de pratos dentro da dieta"
-              center
+              subTitleAlign="center"
               variant="lg"
             />
           </Card>
           <Card fullWidth variant="light">
             <HightLight
               variant="lg"
-              title="22"
+              title={String(statistics.bestSequence)}
               subtitle="melhor sequencia de pratos dentro da dieta"
-              center
+              subTitleAlign="center"
             />
           </Card>
           <Card fullWidth variant="light">
             <HightLight
               variant="lg"
-              title="109"
+              title={String(statistics.mealsCount)}
               subtitle="refeições registradas"
-              center
+              subTitleAlign="center"
             />
           </Card>
           <Card variant="success">
             <HightLight
               variant="lg"
-              title="99"
+              title={String(statistics.mealsInDiet)}
               subtitle="refeições dentro da dieta"
-              center
+              subTitleAlign="center"
             />
           </Card>
           <Card variant="danger">
             <HightLight
               variant="lg"
-              title="10"
+              title={String(statistics.mealsCount - statistics.mealsInDiet)}
               subtitle="refeições fora da dieta"
-              center
+              subTitleAlign="center"
             />
           </Card>
         </CardContainer>

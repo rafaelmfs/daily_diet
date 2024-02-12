@@ -1,11 +1,14 @@
 import styled from "styled-components/native";
 
-type TitleVariants = 'lg' | 'md' | 'sm'
+type TextAlgin =  "start" | "end" | "left" | "right" | "center" | "justify" 
 
-export const Title = styled.Text<{ variant: TitleVariants}>`
+type TitleProps = {
+  variant: 'lg' | 'md' | 'sm'
+  align?: TextAlgin
+}
+export const Title = styled.Text<TitleProps>`
   font-weight: 700;
-  text-align: center;
-  ${({ theme, variant }) => {
+  ${({ theme, variant, align }) => {
     const fontSize = () => {
       switch(variant){
         case 'lg': {
@@ -22,16 +25,17 @@ export const Title = styled.Text<{ variant: TitleVariants}>`
     return `
       color: ${theme.COLORS['gray-1']};
       font-size: ${fontSize()};
+      text-align: ${align ?? "center"};
     `
   }}
 `
 
-export const Subtitle = styled.Text<{center?: boolean}>`
+export const Subtitle = styled.Text<{align?: TextAlgin}>`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
 
-  text-align: ${({center}) => center ? 'center' : 'left'};
+  text-align: ${({ align }) => align ?? 'left'};
   
   color: ${({ theme }) => theme.COLORS['gray-1']};
 `
