@@ -1,16 +1,37 @@
 import styled from "styled-components/native";
 
-export const Title = styled.Text<{ variant: 'lg' | 'md'}>`
-  font-size: ${({ theme, variant }) => variant === 'lg' ?  theme.FONT_SIZE["2xl"] : theme.FONT_SIZE.xl};
+type TitleVariants = 'lg' | 'md' | 'sm'
+
+export const Title = styled.Text<{ variant: TitleVariants}>`
   font-weight: 700;
   text-align: center;
-  color: ${({ theme }) => theme.COLORS['gray-1']};
+  ${({ theme, variant }) => {
+    const fontSize = () => {
+      switch(variant){
+        case 'lg': {
+          return theme.FONT_SIZE["2xl"]
+        }
+        case "md": {
+          return theme.FONT_SIZE.lg
+        }
+        case 'sm': {
+          return theme.FONT_SIZE.md
+        }
+      }
+    }
+    return `
+      color: ${theme.COLORS['gray-1']};
+      font-size: ${fontSize()};
+    `
+  }}
 `
 
-export const Subtitle = styled.Text`
+export const Subtitle = styled.Text<{center?: boolean}>`
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
+
+  text-align: ${({center}) => center ? 'center' : 'left'};
   
   color: ${({ theme }) => theme.COLORS['gray-1']};
 `

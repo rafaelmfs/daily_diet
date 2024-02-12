@@ -1,18 +1,23 @@
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { FlatList, Text, View } from "react-native";
 import { getAllMeals } from "../../api/CRUD/MEALS/getAllMeals";
 import { Button } from "../../components/Button";
 import { VerticalDivider } from "../../components/VerticalDivider";
-import { useAuthUser } from "../../context/UserContext";
 import { Meal } from "../../interfaces/Meal";
 import theme from "../../theme";
 import { MealsHistoryItem, MealsHistoryItemStatus, MealsHistoryItemStatusIndicator, MealsHistoryTitle } from "./styled";
 
+function RowSeparator(){
+  return <View style={{ width: '100%', height: 16, backgroundColor: "transparent" }} />
+}
+
 export function MealsHistory() {
   const [meals, setMeals] = useState<Meal[]>([])
-  const { authToken } = useAuthUser()
   const mealsByDate: { [date: string]: Meal[] } = {};
+
+  const navigation = useNavigation()
 
 // Organizar refeições por data
   meals.forEach(meal => {
@@ -36,26 +41,25 @@ export function MealsHistory() {
   }));
 
   async function loadMeals(){
-    const { meals } = await getAllMeals(authToken ?? '')
+    const { meals } = await getAllMeals()
     
     if(meals){
       setMeals(meals)
     }
   }
 
-  useEffect(() => {
-    if(authToken){
-      loadMeals()
-    }
-  }, [authToken])
+  useFocusEffect(useCallback(() => {
+    loadMeals()
+  }, []))
 
 
   return (
     <FlatList 
       data={displayMealsHistory}
       style={{
-        marginBottom: 64
+        marginBottom: 64,
       }}
+      ItemSeparatorComponent={RowSeparator}
       renderItem={({ item, index }) => (
         <>
           <MealsHistoryTitle style={{ fontSize: 32 }}>{item.date}</MealsHistoryTitle>

@@ -1,19 +1,23 @@
 import { useNavigation } from '@react-navigation/native';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Text, View } from "react-native";
 import { login } from '../../api/CRUD/AUTH';
+import { api, configAuthAPI } from '../../api/axios';
 import { Button } from '../../components/Button';
 import { ErrorLabel } from '../../components/ErrorLabel';
 import { Logo } from '../../components/Logo';
 import { PasswordInput } from '../../components/PasswordInput';
 import { TextInputStyled } from '../../components/TextInput';
 import { useAuthUser } from '../../context/UserContext';
+import { getToken } from '../../storage/auth/getToken';
 import { Container } from "./style";
 
 
 
 export function Login() {
   const navigation = useNavigation()
+  const [isLoading, setIsLoading] = useState(true)
   const { 
     control,
     handleSubmit, 
@@ -43,6 +47,7 @@ export function Login() {
         password: data.password.trim()
       })
       if (authToken) {
+        configAuthAPI(authToken)
         setAuthToken(authToken)
         navigation.navigate('home')
       }
@@ -55,6 +60,27 @@ export function Login() {
         message: "Usário ou senha inválidos"
       })
     }
+  }
+
+  async function loadLastSession(){
+    const token = await getToken()
+    if(token){
+      configAuthAPI(token)
+      setAuthToken(token)
+      navigation.navigate('home')
+    }else{
+      setIsLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    api.interceptors.request.clear()
+
+    loadLastSession()
+  }, [isLoading])
+
+  if(isLoading){
+    return <Container />
   }
 
   return (

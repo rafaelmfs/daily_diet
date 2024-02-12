@@ -14,7 +14,7 @@ export function Button({
 }: ButtonProps) {
   return (
     <Styled.Button variant={variant} {...props}>
-      {icon && icon}
+      {icon}
       <Styled.Text variant={variant}>{ text }</Styled.Text>
     </Styled.Button>
   )

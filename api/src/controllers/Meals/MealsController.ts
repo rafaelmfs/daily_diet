@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { CustomError } from "../../utils/CustomError";
-import { createMealBodySchema, idMealParamSchema, inDietQueryParamSchema, mealsCountParamSchema, updateMealBodySchema } from "./schema";
 import { createMeal, deleteMeal, getAllMeals, getMeal, getMealInDiet, getMealsCount, updateMeal } from "../../models/meals";
-import { generateShortUUID } from "../../utils/generateShorUUID";
 import { bestSequenceMealsInDiet } from "../../services/bestSequenceMealsInDiet";
+import { CustomError } from "../../utils/CustomError";
+import { generateShortUUID } from "../../utils/generateShorUUID";
+import { createMealBodySchema, idMealParamSchema, inDietQueryParamSchema, mealsCountParamSchema, updateMealBodySchema } from "./schema";
 
 export class MealsController{
   public async createMeal(req: FastifyRequest, reply: FastifyReply){
