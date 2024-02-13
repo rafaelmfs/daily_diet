@@ -39,7 +39,6 @@ export function PasswordInput({
       {
         secureTextVisible ?
           <InputButton
-            // activeOpacity={70}
             onPress={() => setSecureTextVisible(false)}
           >
             <EyeClosed
@@ -49,7 +48,6 @@ export function PasswordInput({
           </InputButton>
           :
           <InputButton
-            // activeOpacity={70}
             onPress={() => setSecureTextVisible(true)}
           >
             <Eye

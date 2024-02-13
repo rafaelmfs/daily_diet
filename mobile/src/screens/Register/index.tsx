@@ -2,13 +2,14 @@ import { useNavigation } from "@react-navigation/native";
 import { Controller, useForm } from "react-hook-form";
 import { Text, TouchableOpacity, View } from "react-native";
 import { login, register } from "../../api/CRUD/AUTH";
+import { configAuthAPI } from "../../api/axios";
 import { BackButton } from "../../components/BackButton";
 import { Button } from "../../components/Button";
 import { ErrorLabel } from "../../components/ErrorLabel";
 import { Logo } from "../../components/Logo";
 import { PasswordInput } from "../../components/PasswordInput";
 import { TextInputStyled } from "../../components/TextInput";
-import { useAuthUser } from "../../context/UserContext";
+import { addTokenInStorage } from "../../storage/auth/addTokenInStorage";
 import { Container, InputContainer } from "./styled";
 
 interface RegisterData {
@@ -34,9 +35,6 @@ export function Register() {
   const navigation = useNavigation()
 
   const passwordValue = watch('password')
-  const { 
-    setAuthToken,
-  } = useAuthUser()
 
   async function loginUser(data: {
     login: string;
@@ -46,7 +44,8 @@ export function Register() {
       const authToken = await login(data)
 
       if (authToken) {
-        setAuthToken(authToken)
+        configAuthAPI(authToken)
+        addTokenInStorage(authToken)
         navigation.navigate("home")
       }
     } catch (error) {

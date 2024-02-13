@@ -10,14 +10,13 @@ import { Button } from "../../components/Button";
 import { HightLight } from "../../components/HightLight";
 import { Logo } from "../../components/Logo";
 import { Skeleton } from "../../components/Skeleton";
-import { useAuthUser } from "../../context/UserContext";
 import { Meal } from "../../interfaces/Meal";
+import { removeToken } from "../../storage/auth/removeToken";
 import { MealsHistory } from "./MealsHistory";
 import { DropDownContainer, DropDownItem, Header, HomeContainer, Profile, Statistics, StatisticsOpenButton } from "./styled";
 
 export function Home() {
   const navigation = useNavigation()
-  const { removeAuthToken } = useAuthUser()
   const [isLoading, setIsLoading] = useState(true)
 
   const [meals, setMeals] = useState<Meal[]>([]);
@@ -30,42 +29,71 @@ export function Home() {
   const percentage = (mealsInDiet / mealsCount )* 100
 
   async function loadMeals(){
-    const { meals, total } = await getAllMeals()
-    
-    if(meals){
-      setMealsCount(total)
-      setMeals(meals)
+    try {
+      const { meals, total } = await getAllMeals()
+      
+      if(meals){
+        setMealsCount(total)
+        setMeals(meals)
+      }
+      
+    } catch (error) {
+      await removeToken()
+      navigation.navigate("login", {
+        session_expired: true
+      })
     }
   }
 
   async function loadMealsInDietCount(){
-    const { count } = await getMealsInDietCount()
+    try {
+      const { count } = await getMealsInDietCount()
 
-    if(count){
-      setMealsInDiet(count)
+      if(count){
+        setMealsInDiet(count)
+      }
+    } catch (error) {
+      await removeToken()
+      navigation.navigate("login", {
+        session_expired: true
+      })
     }
   }
 
   async function loadBestSequence(){
-    const { data } = await  getBestSequenceMealsInDiet()
-    if(data.bestSequence){
-      setBestSequence(data.bestSequence)
+    try {
+      const { data } = await  getBestSequenceMealsInDiet()
+      if(data.bestSequence){
+        setBestSequence(data.bestSequence)
+      }
+    } catch (error) {
+      await removeToken()
+      navigation.navigate("login", {
+        session_expired: true
+      })
+      
     }
   }
 
   async function loadMealsData(){
-    await Promise.all([
-      loadMeals(),
-      loadMealsInDietCount(),
-      loadBestSequence()
-    ])
-    setIsLoading(false)
+    try {
+      await Promise.all([
+        loadMeals(),
+        loadMealsInDietCount(),
+        loadBestSequence()
+      ])
+      setIsLoading(false)
+    } catch (error: any) {
+      console.error(error)
+    }
   }
 
   async function handleLogout(){
     await logout()
-    await removeAuthToken()
-    navigation.navigate("login")
+    await removeToken()
+    navigation.navigate("login", {
+      session_expired: true
+    })
   }
 
   useFocusEffect(useCallback(() => {
@@ -100,7 +128,7 @@ export function Home() {
           })}>
             <StatisticsOpenButton variant={percentage >= 60 ? "success" : "danger"} />
             <HightLight
-              title={`${Number(percentage).toFixed(2)}%`}
+              title={`${percentage > 0 ? Number(percentage).toFixed(2) : 0}%`}
               subtitle="das refeições dentro da dieta"
               variant="lg"
             />

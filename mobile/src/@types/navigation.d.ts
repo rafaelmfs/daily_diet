@@ -2,7 +2,7 @@ import { Meal } from "../interfaces/Meal";
 export declare global{
   namespace ReactNavigation{
     interface RootParamList{
-      login: undefined;
+      login: undefined | { session_expired: boolean};
       register: undefined;
       home: undefined;
       overview: {

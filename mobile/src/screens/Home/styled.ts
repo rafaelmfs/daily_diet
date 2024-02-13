@@ -22,6 +22,7 @@ export const Profile = styled.TouchableOpacity`
   border-radius: 999px;
   border: 2px solid black;
   
+  
   align-items: center;
   justify-content: center;
   background-color: ${({ theme }) => theme.COLORS["gray-6"]};

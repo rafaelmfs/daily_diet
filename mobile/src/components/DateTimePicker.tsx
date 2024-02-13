@@ -16,15 +16,26 @@ export function DateTimePicker({ dateValue, onDateChange }: DateTimePickerProps)
 
  return(
    <View>
-     <StyledInput value={dayjs(currentValue).format("HH:mm")} onFocus={() => setOpenPicker(true)} />
+     <StyledInput 
+        value={dayjs(currentValue).format("HH:mm")} 
+        onBlur={() => setOpenPicker(false)} 
+        onFocus={() =>  setOpenPicker(true)}
+      />
      {
-       openPicker && <RNDateTimePicker locale="ptBR" mode="time" value={dateValue} onChange={(event, dateChanged) => {
-        if(dateChanged){
-          setCurrentValue(dateChanged)
-          onDateChange(dayjs(dateChanged).format("HH:mm"))
-        }
-         setOpenPicker(false)
-       }} />
+       openPicker && (
+        <RNDateTimePicker 
+          locale="ptBR" 
+          mode="time" 
+          value={currentValue} 
+          onChange={(event, dateChanged) => {
+            setOpenPicker(false)
+            if(dateChanged){
+              setCurrentValue(dateChanged)
+              onDateChange(dayjs(dateChanged).format("HH:mm"))
+            }
+          }}
+        />
+       )
      }
    </View>
  )

@@ -5,10 +5,8 @@ export async function getToken() {
   try {
     const token = await AsyncStorage.getItem(AUTH_TOKEN)
 
-    if (token) {
-      return token
-    }
+    return token
   } catch (error) {
-      throw error
+    throw error
   }
 }

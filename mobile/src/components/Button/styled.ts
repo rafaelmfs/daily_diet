@@ -51,7 +51,7 @@ export const Text = styled.Text<{ variant?: string }>`
     }
     if (variant == 'text') {
       return css`
-        color: ${theme.COLORS["gray-2"]}
+        color: ${theme.COLORS["gray-2"]};
       `
     }
     return css`

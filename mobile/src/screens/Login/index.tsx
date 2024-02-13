@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Text, View } from "react-native";
@@ -9,18 +9,21 @@ import { ErrorLabel } from '../../components/ErrorLabel';
 import { Logo } from '../../components/Logo';
 import { PasswordInput } from '../../components/PasswordInput';
 import { TextInputStyled } from '../../components/TextInput';
-import { useAuthUser } from '../../context/UserContext';
+import { addTokenInStorage } from '../../storage/auth/addTokenInStorage';
 import { getToken } from '../../storage/auth/getToken';
 import { Container } from "./style";
 
 
 
 export function Login() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
+  const route: any = useRoute();
+
   const [isLoading, setIsLoading] = useState(true)
   const { 
     control,
     handleSubmit, 
+    reset,
     formState: {
       errors,
     },
@@ -31,8 +34,6 @@ export function Login() {
       password: '',
     }
   })
-  const { setAuthToken } = useAuthUser()
-  
   function handleRegister() {
     navigation.navigate('register')
   }
@@ -48,8 +49,9 @@ export function Login() {
       })
       if (authToken) {
         configAuthAPI(authToken)
-        setAuthToken(authToken)
+        addTokenInStorage(authToken)
         navigation.navigate('home')
+        reset()
       }
     } catch (error) {
       console.error(error)
@@ -64,10 +66,11 @@ export function Login() {
 
   async function loadLastSession(){
     const token = await getToken()
+    const sessionExpired = route.params?.session_expired
 
-    if(token){
+    if(token && !sessionExpired){
       configAuthAPI(token)
-      setAuthToken(token)
+      addTokenInStorage(token)
       navigation.navigate('home')
     }else{
       setIsLoading(false)
@@ -78,7 +81,7 @@ export function Login() {
     api.interceptors.request.clear()
 
     loadLastSession()
-  }, [isLoading])
+  }, [isLoading, route.params])
 
   if(isLoading){
     return <Container />

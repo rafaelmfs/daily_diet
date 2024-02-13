@@ -26,10 +26,12 @@ export async function login(data: LoginParams) {
   try {
     const loginResponse: AxiosResponse<{ auth: string }> = await api.post('/login', data)
 
-    if (loginResponse.status == 200) {
-      const { auth } = loginResponse.data
-      return auth
+    if (loginResponse.status != 200) {
+      throw new Error("Usuário ou senha inválidos!")
     }
+    const { auth } = loginResponse.data
+    return auth
+    
   } catch (error) {
     throw error
   }

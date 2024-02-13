@@ -23,7 +23,7 @@ export function Overview(){
         <BackButton color={success ? theme.COLORS["green-dark"] : theme.COLORS["red-dark"]} style={{ marginRight: 'auto' }} />
 
         <HightLight
-          title={`${statistics.percentage.toFixed(2)}%`}
+          title={`${statistics.percentage > 0 ? statistics.percentage.toFixed(2) : 0}%`}
           subtitle="das refeições dentro da dieta"
           variant="lg"
           subTitleAlign="center"
@@ -43,14 +43,6 @@ export function Overview(){
               subtitle="melhor sequência de pratos dentro da dieta"
               subTitleAlign="center"
               variant="lg"
-            />
-          </Card>
-          <Card fullWidth variant="light">
-            <HightLight
-              variant="lg"
-              title={String(statistics.bestSequence)}
-              subtitle="melhor sequencia de pratos dentro da dieta"
-              subTitleAlign="center"
             />
           </Card>
           <Card fullWidth variant="light">

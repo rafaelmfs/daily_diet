@@ -15,21 +15,27 @@ export function DatePicker({ dateValue, onDateChange }: DatePickerProps){
 
   return(
     <View>
-      <StyledInput value={dayjs(currentValue).format("DD/MM/YYYY")} onFocus={() => {
-        if(!openPicker){
-          setOpenPicker(true)
-        }
-      }} />
+      <StyledInput 
+        value={dayjs(currentValue).format("DD/MM/YYYY")} 
+        onBlur={() => setOpenPicker(false)} 
+        onFocus={() => setOpenPicker(true)} 
+      />
       {
-        openPicker && <RNDateTimePicker locale="ptBR" value={dateValue} onChange={(event, dateChanged) => {
-          if(dateChanged){
-            const changedValue = dayjs(dateChanged).startOf('day').format("YYYY-MM-DD")
-
-            onDateChange(changedValue)
-            setCurrentValue(dateChanged)
-          }
-          setOpenPicker(false)
-        }} />
+        openPicker && (
+          <RNDateTimePicker 
+            locale="ptBR" 
+            value={dateValue}             
+            onChange={(event, dateChanged) => {
+              setOpenPicker(false)
+              if(dateChanged){
+                const changedValue = dayjs(dateChanged).startOf('day')
+    
+                onDateChange(changedValue.format("YYYY-MM-DD"))
+                setCurrentValue(dateChanged)
+              }
+            }} 
+          />
+        )
       }
     </View>
   )

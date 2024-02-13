@@ -10,7 +10,7 @@ export function configAuthAPI(token: string){
       config.headers.Authorization = token
       return config
     },
-    (error) => {
+    (error: any) => {
       return Promise.reject(error)
     },
   )
