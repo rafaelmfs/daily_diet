@@ -1,7 +1,10 @@
 import axios from "axios";
 
+const server = process.env.EXPO_PUBLIC_API_URL
+const serverPort = process.env.EXPO_PUBLIC_API_PORT
+
 export const api = axios.create({
-  baseURL: 'http://192.168.18.100:3333'
+  baseURL: `${server}:${serverPort}`
 })
 
 export function configAuthAPI(token: string){

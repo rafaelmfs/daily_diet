@@ -17,6 +17,10 @@ export function Overview(){
   const statistics: Statiscts  = route.params
   const success = statistics.percentage >= 60
 
+console.log({
+  statistics
+})
+
   return (
     <OverviewContainer success={success}>
       <OverviewHeader>

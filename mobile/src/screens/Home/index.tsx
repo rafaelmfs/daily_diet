@@ -26,11 +26,18 @@ export function Home() {
 
   const [openDropDown, setOpenDropDown] = useState(false)
 
-  const percentage = (mealsInDiet / mealsCount )* 100
+  const percentage = () => {
+    if(mealsInDiet > 0 && mealsCount > 0){
+      return (mealsInDiet / mealsCount)* 100
+    }
+
+    return 0
+  }
 
   async function loadMeals(){
     try {
       const { meals, total } = await getAllMeals()
+      console.log({meals})
       
       if(meals){
         setMealsCount(total)
@@ -48,7 +55,7 @@ export function Home() {
   async function loadMealsInDietCount(){
     try {
       const { count } = await getMealsInDietCount()
-
+      console.log({ count })
       if(count){
         setMealsInDiet(count)
       }
@@ -63,6 +70,7 @@ export function Home() {
   async function loadBestSequence(){
     try {
       const { data } = await  getBestSequenceMealsInDiet()
+      console.log({ data })
       if(data.bestSequence){
         setBestSequence(data.bestSequence)
       }
@@ -120,15 +128,15 @@ export function Home() {
         </Header>
         {
           isLoading ? <Skeleton height={'80px'} /> : (
-          <Statistics variant={percentage >= 60 ? "success" : "danger"} onPress={() => navigation.navigate('overview', {
+          <Statistics variant={percentage() >= 60 ? "success" : "danger"} onPress={() => navigation.navigate('overview', {
             bestSequence,
             mealsInDiet,
             mealsCount,
-            percentage
+            percentage: percentage()
           })}>
-            <StatisticsOpenButton variant={percentage >= 60 ? "success" : "danger"} />
+            <StatisticsOpenButton variant={percentage() >= 60 ? "success" : "danger"} />
             <HightLight
-              title={`${percentage > 0 ? Number(percentage).toFixed(2) : 0}%`}
+              title={`${percentage() > 0 ? Number(percentage()).toFixed(2) : 0}%`}
               subtitle="das refeições dentro da dieta"
               variant="lg"
             />
