@@ -37,8 +37,6 @@ export function Home() {
   async function loadMeals(){
     try {
       const { meals, total } = await getAllMeals()
-      console.log({meals})
-      
       if(meals){
         setMealsCount(total)
         setMeals(meals)
@@ -55,7 +53,6 @@ export function Home() {
   async function loadMealsInDietCount(){
     try {
       const { count } = await getMealsInDietCount()
-      console.log({ count })
       if(count){
         setMealsInDiet(count)
       }
@@ -70,7 +67,6 @@ export function Home() {
   async function loadBestSequence(){
     try {
       const { data } = await  getBestSequenceMealsInDiet()
-      console.log({ data })
       if(data.bestSequence){
         setBestSequence(data.bestSequence)
       }
