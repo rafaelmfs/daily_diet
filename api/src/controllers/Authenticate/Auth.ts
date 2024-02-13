@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { getUserByLogin } from '../../models/user';
 import { checkUserLoggedIn, deleteSession, newSession } from '../../models/user_sessions';
+import { CustomError } from '../../utils/CustomError';
 import { compareHash } from '../../utils/cryptoService';
 import { generateAuthToken, validateToken } from '../../utils/jwtService';
 import { loginBodySchema } from './schema';
-import { CustomError } from '../../utils/CustomError';
 
 export class Authenticate{
   public async login(req: FastifyRequest, reply: FastifyReply) {
@@ -24,8 +24,10 @@ export class Authenticate{
         
         const isCorrectPassword = compareHash(user.password, password);
   
-        if (isCorrectPassword) {
-          const lastSession = await checkUserLoggedIn(user.id)
+        if (!isCorrectPassword) {
+          return reply.status(401).send({ message: "Usuário ou senha inválidos" })
+        }
+        const lastSession = await checkUserLoggedIn(user.id)
           if (lastSession) {
             await deleteSession(lastSession.id)
           }
@@ -41,7 +43,6 @@ export class Authenticate{
           await newSession(session)
 
           return reply.status(200).send({ auth })
-        }
       }
 
       
