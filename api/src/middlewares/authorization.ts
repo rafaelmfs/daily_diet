@@ -1,63 +1,58 @@
-import { FastifyReply, FastifyRequest } from 'fastify';
-import { getSession } from '../models/user_sessions';
-import { validateToken } from '../utils/jwtService';
-import { CustomError } from '../utils/CustomError';
+import { FastifyReply, FastifyRequest } from "fastify";
+import { getSession } from "../models/user_sessions";
+import { validateToken } from "../utils/jwtService";
+import { CustomError } from "../utils/CustomError";
 
 const HTTP_STATUS = {
   UNAUTHORIZED: 401,
   BAD_REQUEST: 400,
-}
+};
 
-export async function authorize(req: FastifyRequest, reply: FastifyReply) { 
+export async function authorize(req: FastifyRequest, reply: FastifyReply) {
   try {
-    const token = req.headers.authorization
+    const token = req.headers.authorization;
 
-    if (!token) {
+    if (!token || !token.includes("Bearer")) {
       throw new CustomError({
         code: HTTP_STATUS.BAD_REQUEST,
-        message: 'Envie um token de autenticação!'
-      })
+        message: "Envie um token de autenticação!",
+      });
     }
 
-    const decode = validateToken(token)
-    const sessionId = decode.jti
-  
+    const decode = validateToken(token.replace("Bearer", "").trim());
+    const sessionId = decode.jti;
 
     if (!sessionId) {
       throw new CustomError({
         code: HTTP_STATUS.UNAUTHORIZED,
-        message: "Sem permissão, faça login!"
-      })
+        message: "Sem permissão, faça login!",
+      });
     }
-    
-    const session = await getSession(sessionId)
+
+    const session = await getSession(sessionId);
 
     if (!session) {
       throw new CustomError({
         code: HTTP_STATUS.UNAUTHORIZED,
-        message: 'Sessão expirada, faça login novamente!'
-      }) 
+        message: "Sessão expirada, faça login novamente!",
+      });
     }
 
     req.user = {
       id: session.user_id,
-      session_id: session.id
-    }
-
+      session_id: session.id,
+    };
   } catch (error: any) {
-    console.error(error) 
+    console.error(error);
 
-    if (error instanceof CustomError) { 
-      reply
-        .status(error.code)
-        .send({ message: error.message })
-    }else if (error?.name === 'JsonWebTokenError') {
-      reply
-        .status(400)
-        .send({ message: "Token inválido" })
+    if (error instanceof CustomError) {
+      reply.status(error.code).send({ message: error.message });
+    } else if (error?.name === "JsonWebTokenError") {
+      reply.status(400).send({ message: "Token inválido" });
     } else {
-      reply.status(HTTP_STATUS.BAD_REQUEST).send({ message: 'Erro durante a autenticação' });
+      reply
+        .status(HTTP_STATUS.BAD_REQUEST)
+        .send({ message: "Erro durante a autenticação" });
     }
-
   }
 }
